@@ -1,24 +1,30 @@
 import React from 'react';
-import logo from './logo.svg';
+import { useEffect , useState } from 'react';
+import { useDispatch , useSelector } from 'react-redux';
+import { RootState } from './App/store';
+import { ThunkDispatch } from '@reduxjs/toolkit';
+import { AnyAction } from '@reduxjs/toolkit';
 import './App.css';
+import { fetchAsync } from './features/cart/cartSlice';
+import Produtcs from './features/product/Produtcs';
+import Cart from './features/cart/Cart';
 
 function App() {
+
+  const dispatch: ThunkDispatch<any, void, AnyAction> = useDispatch();
+  const [showCart , setShowCart] = useState(false)
+  const items = useSelector ( (state : RootState) => state.cart.items)
+
+  useEffect(()=>{
+    dispatch(fetchAsync())
+  },[])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={()=>setShowCart(!showCart)}>{showCart ? "Go to Homepage" :`Cart(${items.length})`}</button>
+      {showCart ?<Cart/>:<Produtcs/> }
+      
+      
     </div>
   );
 }
